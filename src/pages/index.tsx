@@ -11,6 +11,7 @@ type staticProps = {
 }
 
 // This function gets called at build time
+// https://en.nextjs.im/docs/app/guides/static-exports
 export async function getStaticProps(): Promise<staticProps> {
     // TODO: this will have to be changed to point at the current website name
     const res = await (await fetch('http://localhost:3000/api/util')).json() as Data;
