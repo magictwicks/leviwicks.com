@@ -7,7 +7,7 @@ Static Site Generation, baby.
 Notes to self:
 - We have to use the Page Router instead of the App Router
 - We have to use `output: 'export'` in `next.config.ts`
-- We have to use `import { InferGetStaticPropsType } from "next";` to put data into a page at compile time
+- We have to use `getStaticProps` to put data into a page at compile time
 - We *could* use dynamic pages with static generation, which would be good for each blog post in a new tab
 
 # Blog Format
