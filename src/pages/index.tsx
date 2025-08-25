@@ -2,9 +2,13 @@
 
 import { useEffect, useState } from "react";
 import BlogPost from "@/components/BlogPost";
-import { BlogEntry } from "@/types";
+import { BlogEntry, City } from "@/types";
 import { InferGetStaticPropsType } from "next";
-import { Data } from "./api/util";
+
+type Data = {
+    cities: City[],
+    entries: BlogEntry[],
+}
 
 type staticProps = {
     props: Data
@@ -13,13 +17,13 @@ type staticProps = {
 // This function gets called at build time
 // https://en.nextjs.im/docs/app/guides/static-exports
 export async function getStaticProps(): Promise<staticProps> {
-    // TODO: this will have to be changed to point at the current website name
-    const res = await (await fetch('http://localhost:3000/api/util')).json() as Data;
+    // TODO: this is the host and port that the blog json output runs on at comp time
+    const data = await (await fetch('http://localhost:5000')).json() as Data;
 
     // By returning { props: { posts } }, the Home component
     // will receive `posts` as a prop at build time
     return {
-        props: res,
+        props: data,
     }
 }
 

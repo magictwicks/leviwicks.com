@@ -1,7 +1,9 @@
 'use client'
 
-import { blogContentToJSX, BlogEntry } from "@/types";
 import React from "react";
+
+import { blogContentToJSX, BlogEntry } from "@/types";
+
 type Props = {
     post: BlogEntry | null
 }

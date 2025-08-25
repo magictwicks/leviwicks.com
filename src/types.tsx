@@ -1,6 +1,6 @@
 export type City = {
     location: {lat: number, lon: number}; // map coords
-    name: string; // name to display - also what we use to identify if multiple BlogEntries are part of the same city
+    name: string; // name to display - also what we use to identify if multiple BlogEntries are part of the same city (at least in the python backend right now)
 }
 
 export type BlogImage = { type: "BlogImage", url: string };
@@ -11,7 +11,7 @@ export type BlogContent = BlogImage | BlogParagraph | BlogHeader;
 export function blogContentToJSX(c: BlogContent) {
     switch (c.type) {
         case "BlogImage":
-            return <image></image>
+            return <img src={`/blogdata/images/${c.url}`}></img>
         case "BlogParagraph":
             return <p>{c.text}</p>
         case "BlogHeader":
