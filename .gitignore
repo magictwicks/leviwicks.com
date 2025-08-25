@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# actual blog content? We should decide if we want to track this or not. Probs not if you have lots of pics?
+public/blogdata
