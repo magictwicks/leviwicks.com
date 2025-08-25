@@ -2,59 +2,28 @@
 
 import { useEffect, useState } from "react";
 import BlogPost from "@/components/BlogPost";
-import { BlogEntry, BlogParagraph, BlogHeader, BlogImage, City } from "@/types";
-//import { getBlogData } from "@/pages/api/util";
+import { BlogEntry } from "@/types";
 import { InferGetStaticPropsType } from "next";
+import { Data } from "./api/util";
 
 type staticProps = {
-    props: {
-        posts: any[]
-    }
+    props: Data
 }
 
 // This function gets called at build time
 export async function getStaticProps(): Promise<staticProps> {
-    // Call an external API endpoint to get posts
+    // TODO: this will have to be changed to point at the current website name
+    const res = await (await fetch('http://localhost:3000/api/util')).json() as Data;
 
-    const city: City = {location: {x: 0, y: 0}, name: "nowhere"};
-    const example1 = new BlogEntry(city, "A Blog Entry", [
-        new BlogHeader("Header 1"),
-        new BlogParagraph("paragraph 1"),
-        new BlogParagraph("paragraph 2"),
-        new BlogParagraph("paragraph 3"),
-        new BlogHeader("Header 2"),
-        new BlogParagraph("paragraph 4"),
-        new BlogParagraph("paragraph 5"),
-    ])
-    const example2 = new BlogEntry(city, "Another Blog Entry", [
-        new BlogHeader("Header 1"),
-        new BlogParagraph("paragraph 1"),
-        new BlogParagraph("paragraph 2"),
-        new BlogParagraph("paragraph 3"),
-        new BlogHeader("Header 2"),
-        new BlogParagraph("paragraph 4"),
-        new BlogParagraph("paragraph 5"),
-    ])
-    const res = [example1.serialize(), example2.serialize()];
-
-    // By returning { props: { posts } }, the Blog component
+    // By returning { props: { posts } }, the Home component
     // will receive `posts` as a prop at build time
     return {
-        props: {
-            posts: res
-        },
+        props: res,
     }
 }
 
-// TODO: Need to fetch `posts` (by calling some API endpoint)
-//       before this page can be pre-rendered.
-export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({ cities, entries }: InferGetStaticPropsType<typeof getStaticProps>) {
     const [ currentBlog, setCurrentBlog ] = useState<BlogEntry | null>(null);
-
-    const allBlogs: BlogEntry[] = [];
-    for (const e of posts) {
-        allBlogs.push(BlogEntry.deserialize(e));
-    }
 
     useEffect(() => {
         const L = require("leaflet");
@@ -65,17 +34,16 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
-        const marker0 = L.marker([34.44928, -119.66111]).addTo(map);
-        marker0.bindPopup("<b>Westmont College</b>");
-        marker0.on("click", () => {setCurrentBlog(allBlogs[0])});
+        const cityMapping: { [key: string]: BlogEntry } = {}
+        for (const entry of entries) {
+            cityMapping[entry.location.name] = entry
+        }
 
-        const marker1 = L.marker([33.722108, -118.014067]).addTo(map);
-        marker1.bindPopup("<b>Levi's House</b>");
-        marker1.on("click", () => {setCurrentBlog(allBlogs[1])});
-
-        const marker2 = L.marker([32.975588, -117.136778]).addTo(map);
-        marker2.bindPopup("<b>Curtis' House</b");
-        marker2.on("click", () => {setCurrentBlog(allBlogs[2])});
+        for (const city of cities) {
+            const marker = L.marker([city.location.lat, city.location.lon]).addTo(map);
+            marker.bindPopup(`<b>${city.name}</b>`);
+            marker.on("click", () => {setCurrentBlog(cityMapping[city.name])});
+        }
 
         map.on("click", () => setCurrentBlog(null));
     }, [])

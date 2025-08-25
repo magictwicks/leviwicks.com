@@ -1,11 +1,13 @@
-import { BlogEntry } from "@/types";
+'use client'
+
+import { blogContentToJSX, BlogEntry } from "@/types";
 import React from "react";
 type Props = {
     post: BlogEntry | null
 }
 
 export default function BlogPost ({ post } : Props) {
-    if (!post) return null; 
+    if (!post) return null;
 
     return (
         <main className="p-6 max-w-3xl mx-auto">
@@ -13,10 +15,10 @@ export default function BlogPost ({ post } : Props) {
             <div className="prose prose-neutral max-w-none">
                 {post.content.map((item, idx) => (
                     <React.Fragment key={idx}>
-                        {item.to_jsx()}
+                        {blogContentToJSX(item)}
                     </React.Fragment>
                 ))}
             </div>
-        </main>    
+        </main>
     );
 }
