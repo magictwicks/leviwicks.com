@@ -14,7 +14,7 @@ export default function BlogPost ({ post } : Props) {
     return (
         <main className="p-6 max-w-3xl mx-auto">
             <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
-            <div className="prose prose-neutral max-w-none">
+            <div className="max-w-none">
                 {post.content.map((item, idx) => (
                     <React.Fragment key={idx}>
                         {blogContentToJSX(item)}
