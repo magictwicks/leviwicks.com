@@ -11,7 +11,7 @@ export type BlogContent = BlogImage | BlogParagraph | BlogHeader;
 export function blogContentToJSX(c: BlogContent) {
     switch (c.type) {
         case "BlogImage":
-            return <img className="py-3" src={`/blogdata/images/${c.url}`}></img>
+            return <img className="py-3" src={`public/blogdata/images/${c.url}`}></img>
         case "BlogParagraph":
             return <p className="py-3">{c.text}</p>
         case "BlogHeader":
