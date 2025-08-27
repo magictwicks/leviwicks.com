@@ -1,0 +1,5 @@
+[
+    {"location": {"lat": 34.42083, "lon": -119.69819}, "name": "Santa Barbara"},
+    {"location": {"lat": 34.05223, "lon": -118.24368}, "name": "Los Angeles"},
+    {"location": {"lat": 32.71571, "lon": -117.16472}, "name": "San Diego"}
+]
