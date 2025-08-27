@@ -59,7 +59,7 @@ export default function Home({ data }: InferGetServerSidePropsType<typeof getSer
                         <BlogPost post={currentBlog}></BlogPost> 
                             :
                         <>
-                            <h1 className="text-3xl font-bold py-3">Welcome to Levi's Travel Blog! ✈️</h1>
+                            <h1 className="text-3xl font-bold py-3">{`Welcome to Levi's Travel Blog! ✈️`}</h1>
                             <p className="text-lg py-3">The blog will showcase cultural experiences, significant moments, and personal thoughts from my time traveling the world in Fall 2025. 
                                 Each blog post will appear is a pin drop on the map and will mark the city which I am writing from.
                                 If anyone wishes to contact me my international phone can be reached at: (949) 664-3825 </p>
