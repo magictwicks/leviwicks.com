@@ -1,4 +1,4 @@
-import { readJson /*, signedUrl*/ } from "@/lib/gcs.ts";
+import { readJson /*, signedUrl*/ } from "@/lib/gcs";
 
 export const dynamic = "force-dynamic"; // always fresh; switch to revalidate if you cache
 
