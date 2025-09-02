@@ -1,4 +1,4 @@
-import BlogContent from "@/components/BlogContent";
+import BlogPost from "@/components/BlogPost";
 import { readMarkdown } from "@/lib/gcs";
 
 export const dynamic = "force-dynamic"; // always read fresh from GCS (adjust if you cache)
@@ -9,7 +9,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const md = await readMarkdown(slug);
   return (
     <main className="px-6 py-8">
-      <BlogContent body={md} />
+      <BlogPost body={md} />
     </main>
   );
 }
