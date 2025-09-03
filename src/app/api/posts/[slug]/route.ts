@@ -1,8 +1,7 @@
-// app/api/posts/[slug]/route.ts
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-export const runtime = "nodejs";          // ensure Node runtime (not Edge)
-export const dynamic = "force-dynamic";   // or: export const revalidate = 60;
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 async function readMarkdownFromGCS(filename: string) {
   const bucketName = process.env.BLOG_BUCKET;
@@ -10,17 +9,16 @@ async function readMarkdownFromGCS(filename: string) {
 
   const { Storage } = await import("@google-cloud/storage");
   const storage = new Storage();
-  const filePath = `posts/${filename}`;
-  const [buf] = await storage.bucket(bucketName).file(filePath).download();
+  const [buf] = await storage.bucket(bucketName).file(`posts/${filename}`).download();
   return buf.toString("utf8");
 }
 
 export async function GET(
-  _req: Request,
-  { params }: { params: { slug: string } },
+  _req: NextRequest,
+  context: { params: Promise<{ slug: string }> } // <-- note Promise here
 ) {
   try {
-    const slug = params.slug || "";
+    const { slug } = await context.params;       // <-- await it
     const filename = slug.endsWith(".md") ? slug : `${slug}.md`;
     const md = await readMarkdownFromGCS(filename);
 
@@ -29,21 +27,12 @@ export async function GET(
       headers: { "Content-Type": "text/markdown; charset=utf-8" },
     });
   } catch (err: any) {
-    // 404 if the object is missing; 500 otherwise
-    const message = String(err?.message || "");
-    const notFound =
-      message.includes("No such object") ||
-      message.includes("Not Found") ||
-      message.includes("ENOENT");
+    const msg = String(err?.message || "");
+    const notFound = msg.includes("No such object") || msg.includes("Not Found") || msg.includes("ENOENT");
     if (notFound) {
-      return NextResponse.json(
-        { error: "Post not found", detail: message },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Post not found", detail: msg }, { status: 404 });
     }
-    return NextResponse.json(
-      { error: "Failed to read post", detail: message },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to read post", detail: msg }, { status: 500 });
   }
 }
+
