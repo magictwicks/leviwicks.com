@@ -1,5 +1,5 @@
 import BlogPost from "@/components/BlogPost";
-import { readMarkdown } from "@/lib/gcs";
+import { readMarkdown } from "@/lib/gcs.server";
 
 export const dynamic = "force-dynamic"; // always read fresh from GCS (adjust if you cache)
 
