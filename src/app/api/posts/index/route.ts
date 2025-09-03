@@ -1,18 +1,30 @@
-// app/api/posts/[slug]/route.ts
-export const runtime = "nodejs";          // make sure this is NOT edge
-export const dynamic = "force-dynamic";
-
+// app/api/posts/index/route.ts
 import { NextResponse } from "next/server";
-import { readMarkdown } from "@/lib/gcs.server";
 
-export async function GET(_: Request, { params }: { params: { slug: string } }) {
+export const runtime = "nodejs";          // ensure Node runtime (not Edge)
+export const dynamic = "force-dynamic";   // always fetch fresh (change to revalidate if you cache)
+
+async function readJsonFromGCS(objectPath: string) {
+  const bucketName = process.env.BLOG_BUCKET;
+  if (!bucketName) throw new Error("BLOG_BUCKET env var not set");
+
+  // Import the SDK only at runtime (prevents build-time errors)
+  const { Storage } = await import("@google-cloud/storage");
+  const storage = new Storage();
+  const [buf] = await storage.bucket(bucketName).file(objectPath).download();
+  return JSON.parse(buf.toString("utf8"));
+}
+
+export async function GET(_req: Request) {
   try {
-    const filename = params.slug.endsWith(".md") ? params.slug : `${params.slug}.md`;
-    const md = await readMarkdown(filename);
-    return new NextResponse(md, {
-      headers: { "Content-Type": "text/markdown; charset=utf-8" },
-    });
+    // Expecting a small catalog file you maintain: posts/index.json
+    const items = await readJsonFromGCS("posts/index.json");
+    // Example item: { slug, title, lat, lng, cover_image? }
+    return NextResponse.json({ items }, { status: 200 });
   } catch (err: any) {
-    return NextResponse.json({ error: "Failed to read post", detail: err?.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to read posts index", detail: err?.message },
+      { status: 500 },
+    );
   }
 }
