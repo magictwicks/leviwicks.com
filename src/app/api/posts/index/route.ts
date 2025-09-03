@@ -1,17 +1,18 @@
-import { readJson /*, signedUrl*/ } from "@/lib/gcs";
+// app/api/posts/[slug]/route.ts
+export const runtime = "nodejs";          // make sure this is NOT edge
+export const dynamic = "force-dynamic";
 
-export const dynamic = "force-dynamic"; // always fresh; switch to revalidate if you cache
+import { NextResponse } from "next/server";
+import { readMarkdown } from "@/lib/gcs.server";
 
-export async function GET() {
-  // Expecting posts/index.json in the bucket
-  const items = await readJson("posts/index.json");
-
-  // If images are private and you need signed URLs, uncomment:
-  // for (const item of items) {
-  //   if (item.cover_image) {
-  //     item.cover_signed = await signedUrl(item.cover_image, 60);
-  //   }
-  // }
-
-  return Response.json({ items });
+export async function GET(_: Request, { params }: { params: { slug: string } }) {
+  try {
+    const filename = params.slug.endsWith(".md") ? params.slug : `${params.slug}.md`;
+    const md = await readMarkdown(filename);
+    return new NextResponse(md, {
+      headers: { "Content-Type": "text/markdown; charset=utf-8" },
+    });
+  } catch (err: any) {
+    return NextResponse.json({ error: "Failed to read post", detail: err?.message }, { status: 500 });
+  }
 }
