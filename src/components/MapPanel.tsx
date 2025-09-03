@@ -2,6 +2,19 @@
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import L from "leaflet";
+
+function useLeafletDefaultIcon() {
+  useEffect(() => {
+    // @ts-ignore
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: "/leaflet/marker-icon-2x.png",
+      iconUrl: "/leaflet/marker-icon.png",
+      shadowUrl: "/leaflet/marker-shadow.png",
+    });
+  }, []);
+}
 
 // react-leaflet needs window → dynamic import to avoid SSR
 const MapContainer = dynamic(() => import("react-leaflet").then(m => m.MapContainer), { ssr: false });

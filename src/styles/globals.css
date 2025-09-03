@@ -1,6 +1,15 @@
 @import "tailwindcss";
-
 @import "leaflet/dist/leaflet.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* optional: small tweaks */
+.prose img { border-radius: 0.5rem; }
+/* If you use dark backgrounds: */
+html, body { background: #000; color: #fff; }
+
 
 /* Guard against dark-mode/prose filters touching tiles */
 .leaflet-container img,

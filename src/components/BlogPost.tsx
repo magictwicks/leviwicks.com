@@ -4,21 +4,8 @@ import remarkGfm from "remark-gfm";
 
 export default function BlogPost({ body }: { body: string }) {
   return (
-    <article className="prose prose-invert max-w-none">
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        components={{
-          code({ inline, className, children, ...props }: any) {
-            return inline ? (
-              <code className="px-1 py-0.5 rounded" {...props}>{children}</code>
-            ) : (
-              <pre className="p-4 rounded overflow-x-auto">
-                <code className={className} {...props}>{children}</code>
-              </pre>
-            );
-          },
-        }}
-      >
+    <article className="prose prose-invert max-w-none px-6 py-8">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
         {body}
       </ReactMarkdown>
     </article>

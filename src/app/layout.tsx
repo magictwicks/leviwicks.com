@@ -1,14 +1,14 @@
 import "./../styles/globals.css";
 
 export const metadata = {
-    title: "Your Site",
-    description: "Travel + posts",
+    title: "gobsmacked",
+    description: "bits and bobs",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-        <body className="min-h-screen bg-black text-white">{children}</body>
+        <body className="min-h-screen">{children}</body>
         </html>
     );
 }
