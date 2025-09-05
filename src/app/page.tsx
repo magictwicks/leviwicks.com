@@ -7,9 +7,9 @@ const MapPanel = dynamic(() => import("@/components/MapPanel"), { ssr: false });
 export default function Home() {
   return (
     <main className="grid p-6">
-      <section className="order-1 md:order-2">
+      <div className="order-1 md:order-2">
         <MapPanel />
-      </section>
+      </div>
     </main>
   );
 }
