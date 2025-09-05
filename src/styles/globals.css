@@ -1,53 +1,10 @@
-@import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* optional: small tweaks */
+/* your tweaks */
 .prose img { border-radius: 0.5rem; }
-/* If you use dark backgrounds: */
-html, body { background: #000; color: #fff; }
-
-
-/* Guard against dark-mode/prose filters touching tiles */
-.leaflet-container img,
-.leaflet-container .leaflet-pane img,
-.leaflet-tile {
-  filter: none !important;
-  mix-blend-mode: normal !important;
-}
-
-/* Ensure the map actually has size */
-.map-wrap,
-.leaflet-container {
-  width: 100%;
-  height: 100%;
-}
-
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+html, body { min-height: 100%; font-family: 'Inter', sans-serif; }
+body { background: #000; color: #fff; }
+.leaflet-container img, .leaflet-container .leaflet-pane img, .leaflet-tile { filter:none!important; mix-blend-mode:normal!important; }
+.map-wrap, .leaflet-container { width:100%; height:100%; }

@@ -1,4 +1,4 @@
-import "./../styles/globals.css";
+import "../styles/globals.css"; // <-- matches your error path
 
 export const metadata = {
     title: "gobsmacked",
