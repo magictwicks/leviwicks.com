@@ -9,8 +9,15 @@ const TileLayer    = dynamic(() => import("react-leaflet").then(m => m.TileLayer
 const Marker       = dynamic(() => import("react-leaflet").then(m => m.Marker),       { ssr: false });
 const Popup        = dynamic(() => import("react-leaflet").then(m => m.Popup),        { ssr: false });
 
-type Raw = { slug?: any; title?: any; lat?: any; lng?: any; [k: string]: any };
-type Pin = { slug: string; title: string; lat: number; lng: number };
+type Raw = { slug?: any; title?: any; lat?: any; lng?: any; summary?: any; cover_image?: any };
+type Pin = { slug: string; title: string; lat: number; lng: number; summary?: string; cover?: string };
+
+function imgUrl(path?: string) {
+  if (!path) return "";
+  if (path.startsWith("http") || path.startsWith("/")) return path;
+  // GCS is private → proxy through your API
+  return `/api/image?path=${encodeURIComponent(path)}`;
+}
 
 export default function MapPanel() {
   useLeafletDefaultIcon();
@@ -19,51 +26,38 @@ export default function MapPanel() {
   const mapRef = useRef<any>(null);
   const center = useMemo(() => ({ lat: 20, lng: 0 }), []);
 
-  // fetch + normalize
   useEffect(() => {
     let cancel = false;
     (async () => {
-      try {
-        const res = await fetch("/api/posts/index", { cache: "no-store" });
-        const data = await res.json();
-        const raw: Raw[] = Array.isArray(data) ? data : Array.isArray(data?.items) ? data.items : [];
-        const normalized: Pin[] = raw
-          .map((r) => ({
-            slug: String(r.slug ?? "").trim(),
-            title: String(r.title ?? "").trim(),
-            lat: Number(r.lat),
-            lng: Number(r.lng),
-          }))
-          .filter((p) =>
-            p.slug &&
-            Number.isFinite(p.lat) &&
-            Number.isFinite(p.lng) &&
-            Math.abs(p.lat) <= 90 &&
-            Math.abs(p.lng) <= 180
-          );
+      const res = await fetch("/api/posts/index", { cache: "no-store" });
+      const data = await res.json();
+      const raw: Raw[] = Array.isArray(data) ? data : Array.isArray(data?.items) ? data.items : [];
+      const normalized: Pin[] = raw
+        .map(r => ({
+          slug: String(r.slug ?? "").trim(),
+          title: String(r.title ?? "").trim(),
+          summary: r.summary ? String(r.summary) : undefined,
+          lat: Number(r.lat),
+          lng: Number(r.lng),
+          cover: r.cover_image ? imgUrl(String(r.cover_image)) : undefined,
+        }))
+        .filter(p =>
+          p.slug &&
+          Number.isFinite(p.lat) &&
+          Number.isFinite(p.lng) &&
+          Math.abs(p.lat) <= 90 &&
+          Math.abs(p.lng) <= 180
+        );
 
-        if (!cancel) {
-          console.log("[Map] raw count:", raw.length, "normalized:", normalized.length);
-          if (normalized.length === 0) {
-            console.warn("[Map] No valid pins. First item was:", raw[0]);
-          }
-          setPins(normalized);
-        }
-      } catch (e) {
-        console.error("[Map] Failed to fetch index:", e);
-      }
+      if (!cancel) setPins(normalized);
     })();
     return () => { cancel = true; };
   }, []);
 
-  // ensure tiles aren’t fragmented
   useEffect(() => {
     const t = setTimeout(() => mapRef.current?.invalidateSize?.(true), 120);
     return () => clearTimeout(t);
   }, []);
-
-  // fallback pin so you can confirm markers render at all
-  const pinsToRender = pins.length ? pins : [{ slug: "test", title: "Test Pin", lat: 12.73604, lng: 80.00831 }];
 
   return (
     <div className="map-shell h-[70vh] md:h-[80vh]">
@@ -73,9 +67,27 @@ export default function MapPanel() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           crossOrigin="anonymous"
         />
-        {pinsToRender.map((p) => (
+        {pins.map(p => (
           <Marker key={p.slug} position={[p.lat, p.lng]}>
-            <Popup><strong>{p.title}</strong></Popup>
+            <Popup>
+              <div className="min-w-[200px] max-w-[260px] space-y-2">
+                {p.cover && (
+                  <img
+                    src={p.cover}
+                    alt=""
+                    className="block w-full h-auto rounded"
+                    loading="lazy"
+                  />
+                )}
+                <h3 className="m-0 font-semibold text-base">{p.title}</h3>
+                {p.summary && (
+                  <p className="m-0 text-sm opacity-80 line-clamp-3">{p.summary}</p>
+                )}
+                <a href={`/posts/${p.slug}`} className="inline-block text-sm underline">
+                  Read post →
+                </a>
+              </div>
+            </Popup>
           </Marker>
         ))}
       </MapContainer>

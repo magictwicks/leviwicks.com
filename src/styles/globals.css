@@ -88,3 +88,6 @@ html, body {
 .prose img {
   border-radius: 8px;
 }
+
+/* in globals.css */
+.leaflet-popup-content img { max-width: 100%; height: auto; }
