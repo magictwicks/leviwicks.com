@@ -123,3 +123,28 @@ body {
   margin-inline: auto;
   padding-inline: 1rem;
 }
+
+/* Centered post column: ~40% width on md+, full width on small */
+.post-wrap {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1rem; /* side padding on mobile */
+}
+@media (min-width: 768px) {
+  .post-wrap {
+    width: 40vw;           /* 40% of viewport width ⇒ ~30% margins */
+    padding-inline: 0;     /* no extra padding on wide screens */
+  }
+}
+
+@layer components {
+  .markdown {
+    @apply prose prose-invert mx-auto;
+  }
+  .markdown h1 { @apply text-4xl font-bold mt-6 mb-4; }
+  .markdown h2 { @apply text-3xl font-semibold mt-8 mb-3; }
+  .markdown p  { @apply leading-7 my-4; }
+  .markdown img { @apply rounded-lg; }
+  .markdown pre { @apply p-4 rounded-lg bg-black/50 overflow-x-auto my-6; }
+}
+

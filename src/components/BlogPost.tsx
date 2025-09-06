@@ -1,11 +1,16 @@
+// src/components/BlogContent.tsx
 "use client";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-export default function BlogPost({ body }: { body: string }) {
+export default function BlogContent({ body }: { body: string }) {
   return (
-    <article className="markdown">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
-    </article>
+    <main className="markdown post-wrap">
+      <article className="prose prose-invert">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {body}
+        </ReactMarkdown>
+      </article>
+    </main>
   );
 }

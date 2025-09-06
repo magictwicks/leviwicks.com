@@ -16,6 +16,8 @@ function useLeafletDefaultIcon() {
   }, []);
 }
 
+useLeafletDefaultIcon();
+
 // react-leaflet needs window → dynamic import to avoid SSR
 const MapContainer = dynamic(() => import("react-leaflet").then(m => m.MapContainer), { ssr: false });
 const TileLayer    = dynamic(() => import("react-leaflet").then(m => m.TileLayer), { ssr: false });
