@@ -24,7 +24,7 @@ export default function MapPanel({ pins = [] as Pin[] }) {
   }, []);
 
   return (
-    <div className="map-shell h-[70vh] md:h-[80vh]">
+    <div className="map-shell">
       <MapContainer
         ref={mapRef}
         center={{ lat: 20, lng: 0 }}
