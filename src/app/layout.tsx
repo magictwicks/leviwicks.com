@@ -7,20 +7,18 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <>
+        <html lang="en">
             <head>
-            {/* CDN */}
-                <link
-                    rel="stylesheet"
-                    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-                    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-                    crossOrigin="anonymous"
-                />
-            </head>
-            <html lang="en">
+                {/* CDN */}
+                    <link
+                        rel="stylesheet"
+                        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+                        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+                        crossOrigin="anonymous"
+                    />
+                </head>
             <body className="min-h-screen">{children}</body>
-            </html>
-        </>
+        </html>
     );
 }
   

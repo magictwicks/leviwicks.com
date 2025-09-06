@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     reactStrictMode: true,
     output: 'standalone',
     eslint: { ignoreDuringBuilds: true },
+    productionBrowserSourceMaps: true,
 };
 
 export default nextConfig;
